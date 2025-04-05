@@ -4,14 +4,25 @@ using Photon.Pun.Demo.Cockpit;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.SearchService;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class NetworkRunnerController : MonoBehaviour, INetworkRunnerCallbacks
 {
+    public event Action OnStartRunnerConnection;
+    public event Action OnPlayerJoinedSuccessfully;
+    
     [SerializeField] private NetworkRunner networkRunnerPrefab;
     public static NetworkRunner networkRunnerInstance;
+    public void ShutdownRunner()
+    {
+        networkRunnerInstance.Shutdown();
+    }
     public async void StartGame(GameMode mode, string roomName)
     {
+        OnStartRunnerConnection?.Invoke();
+
         if (networkRunnerInstance == null)
         {
             networkRunnerInstance = Instantiate(networkRunnerPrefab);
@@ -97,6 +108,7 @@ public class NetworkRunnerController : MonoBehaviour, INetworkRunnerCallbacks
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
         Debug.Log("PlayerJoined");
+        OnPlayerJoinedSuccessfully?.Invoke();
     }
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
@@ -132,6 +144,7 @@ public class NetworkRunnerController : MonoBehaviour, INetworkRunnerCallbacks
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
     {
         Debug.Log("OnConnectedToServer");
+        SceneManager.LoadScene("Lobby");
     }
 
     public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message)
