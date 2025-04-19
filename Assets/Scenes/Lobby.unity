@@ -402,7 +402,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2018189542035558970, guid: acd55da81c0199546b397dc6590b6c92, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2051178782779732564, guid: acd55da81c0199546b397dc6590b6c92, type: 3}
       propertyPath: m_Interactable
@@ -498,11 +498,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3031998840211180856, guid: acd55da81c0199546b397dc6590b6c92, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7773150701318580286, guid: acd55da81c0199546b397dc6590b6c92, type: 3}
       propertyPath: m_Name
       value: LobbyCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 7773150701318580286, guid: acd55da81c0199546b397dc6590b6c92, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 2691863828674897085, guid: acd55da81c0199546b397dc6590b6c92, type: 3}
@@ -897,6 +901,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lobbyPanels:
   - {fileID: 691922931}
+  - {fileID: 2096308532}
 --- !u!114 &2096308532
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -909,7 +914,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 839144f184db5c34c96aecd32376d758, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PanelType: 0
+  PanelType: 2
   PanelAnimator: {fileID: 1330682631}
   joinRandomRoomButton: {fileID: 1164240901}
   joinRandomByArgButton: {fileID: 810050864}

@@ -20,6 +20,7 @@ public class MiddleSectionPanel : LobbyPanelBase
 
     public override void InitPanel(LobbyUIManager UIManager)
     {
+        Debug.Log("MiddleSectionPanel InitPanel() called.");
         base.InitPanel(UIManager);
 
         networkRunnerController = GlobalManagers.Instance.NetworkRunnerController;
@@ -37,6 +38,7 @@ public class MiddleSectionPanel : LobbyPanelBase
 
     private void CreateRoom(GameMode mode, string field)
     {
+        Debug.Log($"Create room with name: {field}");
         if (field.Length >= 2)
         {
             Debug.Log($"============{mode}============");

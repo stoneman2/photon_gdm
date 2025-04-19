@@ -36,6 +36,7 @@ public class CreateNickNamePanel : LobbyPanelBase
         {
             lobbyUIManager.ShowPanel(LobbyPanelType.MiddleSectionPanel);
             ClosePanel();
+            GlobalManagers.Instance.NetworkRunnerController.SetNickName(nickName);
         }
     }
 }
