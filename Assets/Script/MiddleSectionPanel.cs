@@ -45,7 +45,7 @@ public class MiddleSectionPanel : LobbyPanelBase
             Debug.Log($"Create room with name: {field}");
 
             // Create room here!
-            GlobalManagers.Instance.NetworkRunnerController.StartGame(mode, field);
+            networkRunnerController.StartGame(mode, field);
         }
     }
 

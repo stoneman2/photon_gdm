@@ -18,7 +18,7 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
     [SerializeField] private Transform groundDetectionObj;
     [Networked] private NetworkString<_8> playerName { get; set; }
     [Networked] private NetworkBool isGrounded { get; set; }
-    private ChangeDetector changeDetector;
+    private ChangeDetector _changeDetector;
     float horizontal;
     public enum PlayerInputButtons
     {
@@ -38,7 +38,7 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
     public override void Spawned()
     {
         rigid = GetComponent<Rigidbody2D>();   
-
+        _changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState, false);
         SetLocalObject();
     }
 
@@ -54,7 +54,7 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
 
     public override void Render()
     {
-        foreach (var change in changeDetector.DetectChanges(this, out var prev, out var current))
+        foreach (var change in _changeDetector.DetectChanges(this, out var prev, out var current))
         {
             switch(change)
             {
