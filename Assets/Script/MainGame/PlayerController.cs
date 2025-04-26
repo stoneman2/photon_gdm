@@ -12,6 +12,8 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
     public float moveSpeed = 6f;
     public float jumpForce = 1000f;
     Rigidbody2D rigid;
+    private PlayerWeaponController playerWeaponController;
+    private PlayerVisualController playerVisualController;
     [Networked] private NetworkButtons buttonPrev { get; set; }
     [Header("Ground Vars")]
     [SerializeField] private LayerMask groundLayers;
@@ -24,6 +26,7 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
     {
         None,
         Jump,
+        Shoot,
     }
 
     public override void FixedUpdateNetwork()
@@ -33,12 +36,16 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
             rigid.velocity = new Vector2(input.horizontalInput * moveSpeed, rigid.velocity.y);
             CheckJumpInput(input);
         }
+
+        playerVisualController.UpdateScaleTransforms(rigid.velocity);
     }
 
     public override void Spawned()
     {
         rigid = GetComponent<Rigidbody2D>();   
         _changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState, false);
+        playerWeaponController = GetComponent<PlayerWeaponController>();
+        playerVisualController = GetComponent<PlayerVisualController>();
         SetLocalObject();
     }
 
@@ -65,6 +72,8 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
                     break;
             }
         }
+
+        playerVisualController.RenderVisuals(rigid.velocity);
     }
 
     [Rpc(sources: RpcSources.InputAuthority, RpcTargets.StateAuthority)]
@@ -96,7 +105,9 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
     {
         PlayerData data = new PlayerData();
         data.horizontalInput = horizontal;
+        data.gunPivotRotation = playerWeaponController.localQuaternionPivotRot;
         data.networkButtons.Set(PlayerInputButtons.Jump, Input.GetKeyDown(KeyCode.Space));
+        data.networkButtons.Set(PlayerInputButtons.Shoot, Input.GetButtonDown("Fire1"));
         return data;
     }
 
