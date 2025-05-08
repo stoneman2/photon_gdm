@@ -899,6 +899,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36c535cda1846974d951ba26fe2d73ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  loadingCanvasControllerPrefab: {fileID: 7725024626058769460, guid: 3748226446e4c1244a108e1485d1dd60, type: 3}
   lobbyPanels:
   - {fileID: 691922931}
   - {fileID: 2096308532}

@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Fusion;
 using UnityEngine;
 
-public class PlayerVisualController : MonoBehaviour
+public class PlayerVisualController : NetworkBehaviour
 {
     [SerializeField] private Animator animator;
     [SerializeField] private Transform pivotGunTransform;

@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
-using UnityEditor.Experimental.RestService;
 using TMPro;
 using Fusion.Addons.Physics;
 

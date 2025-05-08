@@ -21,6 +21,7 @@ public class PlayerHealthController : NetworkBehaviour
         base.Spawned();
         _changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
         coll = GetComponent<Collider2D>();
+        playerController = GetComponent<PlayerController>();
         currentHealthAmount = MAX_HEALTH_AMOUNT;
     }
 
@@ -74,7 +75,7 @@ public class PlayerHealthController : NetworkBehaviour
         if (Utils.IsLocalPlayer(Object))
         {
             // Shake the camera
-            playerCameraController.ShakeCamera(new Vector3(0.1f, 0.1f, 0f));
+            // playerCameraController.ShakeCamera(new Vector3(0.1f, 0.1f, 0f));
         }
 
         if (healthAmount <= 0)
