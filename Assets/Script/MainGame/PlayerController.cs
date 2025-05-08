@@ -4,6 +4,7 @@ using UnityEngine;
 using Fusion;
 using UnityEditor.Experimental.RestService;
 using TMPro;
+using Fusion.Addons.Physics;
 
 public class PlayerController : NetworkBehaviour, IBeforeUpdate
 {
@@ -14,12 +15,17 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
     Rigidbody2D rigid;
     private PlayerWeaponController playerWeaponController;
     private PlayerVisualController playerVisualController;
+    private PlayerHealthController playerHealthController;
     [Networked] private NetworkButtons buttonPrev { get; set; }
     [Header("Ground Vars")]
     [SerializeField] private LayerMask groundLayers;
     [SerializeField] private Transform groundDetectionObj;
     [Networked] private NetworkString<_8> playerName { get; set; }
+    [Networked] public TickTimer respawnTimer { get; set; }
     [Networked] private NetworkBool isGrounded { get; set; }
+    [Networked] public NetworkBool PlayerIsAlive { get; set; }
+    [Networked] private TickTimer respawnToNewPointTimer { get; set; }
+    [Networked] private Vector2 serverNextSpawnPoint { get; set; }
     private ChangeDetector _changeDetector;
     float horizontal;
     public enum PlayerInputButtons
@@ -31,6 +37,8 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
 
     public override void FixedUpdateNetwork()
     {
+        CheckRespawnTimer();
+        
         if (Runner.TryGetInputForPlayer<PlayerData>(Object.InputAuthority, out var input))
         {
             rigid.velocity = new Vector2(input.horizontalInput * moveSpeed, rigid.velocity.y);
@@ -46,7 +54,10 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
         _changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState, false);
         playerWeaponController = GetComponent<PlayerWeaponController>();
         playerVisualController = GetComponent<PlayerVisualController>();
+        playerHealthController = GetComponent<PlayerHealthController>();
         SetLocalObject();
+
+        PlayerIsAlive = true;
     }
 
     private void SetLocalObject()
@@ -109,6 +120,46 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
         data.networkButtons.Set(PlayerInputButtons.Jump, Input.GetKeyDown(KeyCode.Space));
         data.networkButtons.Set(PlayerInputButtons.Shoot, Input.GetButtonDown("Fire1"));
         return data;
+    }
+
+    private void CheckRespawnTimer()
+    {
+        if (PlayerIsAlive) return;
+
+        if (respawnToNewPointTimer.Expired(Runner))
+        {
+            GetComponent<NetworkRigidbody2D>().Teleport(serverNextSpawnPoint);
+            respawnToNewPointTimer = TickTimer.None;
+        }
+
+        if (respawnTimer.Expired(Runner))
+        {
+            respawnTimer = TickTimer.None;
+            RespawnPlayer();
+        }
+    }
+
+    private void RespawnPlayer()
+    {
+        PlayerIsAlive = true;
+        rigid.simulated = true;
+        playerVisualController.TriggerRespawnAnimation();
+        playerHealthController.ResetHealthAmountToMax();
+    }
+
+    public void KillPlayer()
+    {
+        const int RESPAWN_TIME = 5;
+        if (Runner.IsServer)
+        {
+            serverNextSpawnPoint = GlobalManagers.Instance.playerSpawnerController.GetRandomSpawnPoint();
+            respawnToNewPointTimer = TickTimer.CreateFromSeconds(Runner, RESPAWN_TIME - 1);
+        }
+
+        PlayerIsAlive = false;
+        rigid.simulated = false;
+        playerVisualController.TriggerDeathAnimation();
+        respawnTimer = TickTimer.CreateFromSeconds(Runner, RESPAWN_TIME);
     }
 
     private void CheckJumpInput(PlayerData input)

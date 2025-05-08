@@ -17,6 +17,14 @@ public class PlayerSpawnerController : NetworkBehaviour, IPlayerJoined
         // }
     }
 
+    public void Awake()
+    {
+        if (GlobalManagers.Instance != null)
+        {
+            GlobalManagers.Instance.playerSpawnerController = this;
+        }
+    }
+
     public void PlayerJoined(PlayerRef player)
     {
         Debug.Log($"Player {player} joined the game.");
@@ -54,5 +62,11 @@ public class PlayerSpawnerController : NetworkBehaviour, IPlayerJoined
 
             Runner.SetPlayerObject(playerRef, null);
         }
+    }
+
+    public Vector2 GetRandomSpawnPoint()
+    {
+        var  index = Random.Range(0, spawnPoint.Length);
+        return spawnPoint[index].position;
     }
 }

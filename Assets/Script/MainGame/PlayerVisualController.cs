@@ -41,6 +41,18 @@ public class PlayerVisualController : MonoBehaviour
         SetLocalScaleBasedonDir(pivotGunTransform.gameObject, originalGunPivotScale);
     }
 
+    public void TriggerDeathAnimation()
+    {
+        const string TRIGGER = "Die";
+        animator.SetTrigger(TRIGGER);
+    }
+
+    public void TriggerRespawnAnimation()
+    {
+        const string TRIGGER = "Respawn";
+        animator.SetTrigger(TRIGGER);
+    }
+
     private void SetLocalScaleBasedonDir(GameObject obj, Vector3 originalScale)
     {
         var yValue = originalScale.y;
